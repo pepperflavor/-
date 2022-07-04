@@ -794,6 +794,36 @@ function animate() {
   });
 }
 
+
+
+// function animate() {
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+//   checkMissleEnemy()
+// }
+
 animate();
 spawnEnemies();
 showTime();
