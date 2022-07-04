@@ -2,7 +2,7 @@ const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
 const img = new Image();
-img.src = "asset/background.jpg";
+img.src = "asset/background1.jpg";
 
 img.onload = function () {
   c.drawImage(img, 30, 30, 100, 100, 0, 0, canvas.width, canvas.height);
@@ -611,6 +611,8 @@ function animate() {
   // c.drawImage(img, 20, 20, 100, 100);
 
   // console.log(player.img.pixel * player.img.currFrame);
+
+  console.log(missles.length)
 
   player.draw();
 
