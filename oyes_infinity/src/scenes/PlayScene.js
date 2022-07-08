@@ -21,8 +21,7 @@ class PlayScene extends Phaser.Scene {
     this.createGameEvents();
   }
   update() {
-    const { left, right, space } = this.cursors;
-
+    const { left, right, space, down } = this.cursors;
     if (left.isDown) {
         console.log("down@@@")
       this.player.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;

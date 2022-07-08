@@ -5,11 +5,11 @@ import collidable from "../mixins/collidable";
 class Player extends Phaser.Physics.Arcade.Sprite {
   //scene : 플레이어를 호출한 scene, x, y: 캐릭터 생성지점
   constructor(scene, x, y) {
+    console.log(scene)
     //부모 요소 셋팅
     super(scene, x, y, "cat");
-
     // 호출한 scene에 player sprite 객체를 추가함.
-
+    this.scene = scene
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
 
@@ -38,7 +38,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   initEvents() {
-    this.scene.events.on("update", this.update);
+    this.scene.events.on("update", this.update, this);
   }
 
   handleAttacks() {
@@ -78,28 +78,31 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    // const { left, right, up, down } =
-    //   this.scene.input.keyboard.createCursorKeys();
-    // if (left.isDown) {
-    //   this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
-    //   this.setVelocityX(-this.speed);
-    //   this.setFlipX(true);
-    // } else if (right.isDown) {
-    //   this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
-    //   this.setVelocityX(this.speed);
-    //   this.setFlipX(false);
-    // } else {
-    //   this.setVelocityX(0);
-    // }
-    // if (up.isDown) {
-    //   this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
-    //   this.setVelocityY(-this.speed);
-    // } else if (down.isDown) {
-    //   this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
-    //   this.setVelocityY(this.speed);
-    // } else {
-    //   this.setVelocityY(0);
-    // }
+    if (this.scene) {
+        console.log("@@@@@@@@@@")
+      const { left, right, up, down } =
+        this.scene.input.keyboard.createCursorKeys();
+      if (left.isDown) {
+        this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
+        this.setVelocityX(-this.speed);
+        this.setFlipX(true);
+      } else if (right.isDown) {
+        this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
+        this.setVelocityX(this.speed);
+        this.setFlipX(false);
+      } else {
+        this.setVelocityX(0);
+      }
+      if (up.isDown) {
+        this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
+        this.setVelocityY(-this.speed);
+      } else if (down.isDown) {
+        this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
+        this.setVelocityY(this.speed);
+      } else {
+        this.setVelocityY(0);
+      }
+    }
   }
 }
 
