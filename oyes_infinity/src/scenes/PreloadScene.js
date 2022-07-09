@@ -11,7 +11,6 @@ class PreloadScene extends Phaser.Scene {
   //Scene 선언후 constructor 다음 시작하는 함수
   preload() {
     this.load.image("background", "assets/background.png");
-
     this.load.image("player_character", "assets/player_1/Pink_Monster.png");
 
     this.load.spritesheet(
