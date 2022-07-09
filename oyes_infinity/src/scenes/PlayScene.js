@@ -13,7 +13,7 @@ class PlayScene extends Phaser.Scene {
       .setOrigin(0.5);
     this.score = 0;
     this.player = this.createPlayer();
-    // this.initCamera(this.player);
+    this.initCamera(this.player);
     // this.createGameEvents();
   }
   update() {
