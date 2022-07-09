@@ -1,10 +1,14 @@
 import Phaser from 'phaser'
+import HealthBar from "../hud/HealthBar";
 
 
 
 class Player extends Phaser.Physics.Arcade.Sprite{
     constructor(scene, x, y){
         super(scene, x, y, 'player');
+
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
 
         this.init();
     }
@@ -19,7 +23,18 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         this.hp = new HealthBar;
 
         // 마지막으로 누른 방향
-        this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;;
+        this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
+
+        // 체력바 초기설정
+        this.health = 30;
+        this.hp = new HealthBar(
+          this.scene,
+          // 미들박스가 체력바 위치할 곳 게임화면 중앙
+          this.scene.config.middleBox.x + 5,
+          this.scene.config.middleBox.y + 5,
+          2,
+          this.health
+        );
     }
 
     create(){
@@ -32,8 +47,6 @@ class Player extends Phaser.Physics.Arcade.Sprite{
           frameRate:8,
           repeat:-1,
         });
-
-
     }
 
     update(){
@@ -41,7 +54,6 @@ class Player extends Phaser.Physics.Arcade.Sprite{
             this.User.velocity.y = 1;
         }
     }
-
 }
 
 export default Player;

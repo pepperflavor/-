@@ -10,6 +10,11 @@ import UserMove from "./UserMove.js"
 const SHARED_CONFIG = {
   width: 1100 ,
   height: innerHeight,
+  middleBox:{
+    x: (width /2),
+    y : ( height - 120)
+  },
+  startLevel : 1
 };
 
 //다중  Scene 초기화 하기

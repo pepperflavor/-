@@ -1,14 +1,19 @@
 import Phaser from "phaser";
 
-const M_Config = {
-    type : Phaser.AUTO,
-    parent : "survivalGame",
-    width : 32,
-    height : 32,
-    physics:{
-        default : "arcade",
-        arcade : {
-            debug : true
-        }
-    },
+class Monster extends Phaser.Physics.Arcade.Sprite{
+    constructor(scene, x, y, key){
+        super(scene, x, y, key);
+
+        this.config = scene.config;
+
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+
+        this.init();
+    }
+
+    init(){
+        this.health = 30;
+        this.damage = 10;
+    }
 }

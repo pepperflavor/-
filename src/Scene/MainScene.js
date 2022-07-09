@@ -75,7 +75,7 @@ class MainScene extends Phaser.Scene {
       from: 100,
       to: 0,
       duration: 1000,
-      delay: 2000000, // 발사체가 균등하게 거리를 유지하지 않아서 딜레이를 엄청줌ㅎㅎ
+      delay: 20000000000, // 발사체가 균등하게 거리를 유지하지 않아서 딜레이를 엄청줌ㅎㅎ
       ease: "Sine.easeInOut",
       repeat: -1,
       yoyo: true,
@@ -120,6 +120,7 @@ class MainScene extends Phaser.Scene {
 
     userVelocity.scale(userSpeed);
     this.user.setVelocity(userVelocity.x, userVelocity.y);
+    this.group.setVelocity(userVelocity.x, userVelocity.y);
     // this.user.setVelocityY(userVelocity.y);
 
     let playerVelocity = new Phaser.Math.Vector2();
@@ -130,15 +131,16 @@ class MainScene extends Phaser.Scene {
     //   260
     // );
     // 불꽃무기 생성 위치 코드
-    Phaser.Actions.RotateAroundDistance(
-      this.group.getChildren(),
-      {
-        x: this.user.body.x,
-        y: this.user.body.y,
-      },
-      0.02,
-      this.tween.getValue()
-    );
+      Phaser.Actions.RotateAroundDistance(
+        this.group.getChildren(),
+        {
+          x: this.user.body.x,
+          y: this.user.body.y,
+        },
+        0.02,
+        this.tween.getValue()
+      );
+  
 
     // if (this.tosun.x < 0) {
     //     this.tosun.body.velocity.x =400;
