@@ -1,13 +1,13 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 // import anims from '../mixins/anims';
-import collidable from '../mixins/collidable';
+import collidable from "../mixins/collidable";
 // import initAnimations from '../anims/index';
-
+import HpBar from "../hud/HpBar";
 class Enemy extends Phaser.Physics.Arcade.Sprite {
   //scene : 플레이어를 호출한 scene, x, y: 캐릭터 생성지점
   constructor(scene, x, y) {
     //부모 요소 셋팅
-    super(scene, x, y, 'cat');
+    super(scene, x, y, "cat");
     // 호출한 scene에 enemy sprite 객체를 추가함.
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
@@ -21,54 +21,94 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     this.init();
     this.initEvents(this);
+    this.initOnce();
   }
   init() {
     // this.frameMax = 0;
-    this.hp = 100; //enemy hp
+    this.hp = 80; //enemy hp
     this.speed = 15; //enemy 스피드
     this.hasBeenHit = false; //
-    this.body.setSize(188, 188);
     //Scene의 입력 키보드 선언
     // initAnimations(this.scene.anims);
-    this.setOrigin(0.5).setScale(0.3);
-
     this.frameLimit = 50;
     this.frameCount = 0;
-    this.play('cat');
+    if (this.hpBar) {
+      this.hpBar.redraw(
+        this.body.x,
+        this.body.y + this.body.height,
+        1,
+        this.hp
+      );
+    }
+    this.activateEnemy(true);
+  }
+
+  initOnce() {
+    this.body.setSize(188, 188);
+    this.setOrigin(0.5).setScale(0.3);
+    this.hpBar = new HpBar(this.scene, this.body.x, this.body.y, 2, this.hp);
+    this.play("cat");
+  }
+
+  handleHasBeenHit() {
+    this.hasBeenHit = true; //
+    this.body.velocity;
+    this.scene.time.delayedCall(1000, () => {
+      this.hasBeenHit = false; //
+    });
   }
 
   initEvents() {
     // 코어 playScene의 프레임마다 update가 호출되면 자동으로 enemy의 update를 호출함
-    this.scene.events.on('update', this.update, this);
+    this.scene.events.on("update", this.update, this);
   }
 
   handleAttacks() {
-    this.projectiles.fireProjectile(this, 'cat');
-  }
-
-  playDamageTween() {
-    return this.scene.tweens.add({
-      targets: this,
-      duration: 100,
-      repeat: -1,
-      tint: 0xffffff,
-    });
+    this.projectiles.fireProjectile(this, "cat");
   }
 
   // Enemy is source of the damage for the player
   deliversHit() {}
 
   takesHit(source) {
+    if (this.hasBeenHit) return;
     source.deliversHit(this);
-    this.health -= source.damage;
+    this.hp -= source.damage;
+    this.hpBar.decrease(this.hp);
 
-    if (this.health <= 0) {
-      this.setTint(0xff0000);
-      this.setVelocity(0, -200);
+    if (this.hp <= 0) {
+      this.activateEnemy(false);
+      this.setVelocity(0, 0);
+      this.clearTint();
+      this.damageAnim.stop();
       this.body.checkCollision.none = true;
       this.setCollideWorldBounds(false);
+      this.setRespawn();
+    } else {
+      this.handleHasBeenHit();
+      this.damageAnim = this.playDamageTween();
+      this.scene.time.delayedCall(300, () => {
+        // this.setAlpha(1);
+        this.clearTint();
+        this.damageAnim.stop();
+      });
     }
   }
+
+  playDamageTween() {
+    // return this.scene.tweens.add({
+    //   targets: this,
+    // });
+    return this.scene.tweens.add({
+      targets: this,
+      duration: 25,
+      repeat: -1,
+      yoyo: true,
+      // alpha: 0,
+      tint: 0xff0000,
+    });
+  }
+
   update() {
     // console.log(this.getCenter());
     // 플레이어의 좌표를 받아옴
@@ -96,6 +136,54 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.setFlipX(enemyPosition.x < playerPosition.x ? true : false);
       this.frameCount = 0;
     }
+    this.hpBar.draw(
+       this.body.x,
+       this.body.y + this.body.height,
+      1
+    );
+  }
+  setRespawn() {
+    this.init();
+    // this.clearTint();
+
+    // 리스폰위치 변수 선언
+    let x;
+    let y;
+
+    // 상하좌우 고르게 몬스터를 생성하기 위해
+    // selectXY : X축 Y축 랜덤선택
+    const selectXY = Phaser.Math.Between(0, 1) < 0.5 ? true : false;
+
+    // selectSide : X축이면 왼쪽=0 오른쪽=width      Y축이면 위쪽=0 아래쪽=height 랜덤선택
+    const selectSide = Phaser.Math.Between(0, 1) < 0.5 ? true : false;
+
+    if (selectXY) {
+      y = Phaser.Math.Between(0, this.scene.config.height);
+      x = selectSide
+        ? Phaser.Math.Between(0, -500)
+        : Phaser.Math.Between(
+            this.scene.config.width + 0,
+            this.scene.config.width + 500
+          );
+    } else {
+      x = Phaser.Math.Between(0, this.scene.config.width);
+      y = selectSide
+        ? Phaser.Math.Between(0, -500)
+        : Phaser.Math.Between(
+            this.scene.config.height + 0,
+            this.scene.config.height + 500
+          );
+    }
+    this.body.x = x;
+    this.body.y = y;
+
+    this.body.checkCollision.none = false;
+    this.setCollideWorldBounds(true);
+  }
+
+  activateEnemy(isActive) {
+    this.setActive(isActive);
+    this.setVisible(isActive);
   }
 }
 
